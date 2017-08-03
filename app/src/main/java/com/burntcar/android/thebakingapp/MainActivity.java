@@ -1,7 +1,11 @@
 package com.burntcar.android.thebakingapp;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.content.res.Configuration;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -33,6 +37,8 @@ public class MainActivity extends AppCompatActivity implements RecipeNameAdapter
 
     RecipeNameAdapter recipeNameAdapter;
 
+    List<Recipe> recipes;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +47,15 @@ public class MainActivity extends AppCompatActivity implements RecipeNameAdapter
        ButterKnife.bind(this);
         recipeNameAdapter = new RecipeNameAdapter(this);
         progressBar.setVisibility(View.VISIBLE);
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 2));
+        }else{
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+            layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            recyclerView.setLayoutManager(layoutManager);
+        }
 
-        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(recipeNameAdapter);
 
@@ -61,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements RecipeNameAdapter
         call.enqueue(new Callback<List<Recipe>>() {
             @Override
             public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
-                List<Recipe> recipes = response.body();
+                recipes = response.body();
 
                 /*for(Recipe recipe: recipes){
                     helloTv.append(recipe.toString());
@@ -69,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements RecipeNameAdapter
                 progressBar.setVisibility(View.INVISIBLE);
                 recipeNameAdapter.setData(recipes);
 
-                Toast.makeText(MainActivity.this, "Data loaded ",
+                Toast.makeText(MainActivity.this, "Recipes loaded",
                         Toast.LENGTH_LONG).show();
             }
 
@@ -84,7 +94,15 @@ public class MainActivity extends AppCompatActivity implements RecipeNameAdapter
 
     @Override
     public void onListItemClicked(int clickedItemIndex) {
-        Toast.makeText(MainActivity.this, "clicked Index"+clickedItemIndex,
-                Toast.LENGTH_LONG).show();
+        /*Toast.makeText(MainActivity.this, "clicked Index"+clickedItemIndex,
+                Toast.LENGTH_LONG).show();*/
+
+        Recipe recipe = recipes.get(clickedItemIndex);
+
+        Intent intent = new Intent(MainActivity.this, RecipeListActivity.class);
+        intent.putExtra("recipe", recipe);
+        startActivity(intent);
+
+
     }
 }

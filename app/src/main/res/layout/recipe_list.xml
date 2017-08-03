@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:id="@+id/card_view"
+        card_view:cardUseCompatPadding="true"
+        card_view:cardElevation="5dp"
+
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp"
+            >
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/recipe_steps_tv"
+                android:textSize="15sp"
+                tools:text="Chocolate Cookies"
+                android:text="Ingrediants"
+                android:layout_centerInParent="true"
+
+                />
+
+
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/recipe_list"
+    android:name="com.burntcar.android.thebakingapp.RecipeListFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    app:layoutManager="LinearLayoutManager"
+    tools:context="com.burntcar.android.thebakingapp.RecipeListActivity"
+    tools:listitem="@layout/recipe_list_content" />
+</LinearLayout>
