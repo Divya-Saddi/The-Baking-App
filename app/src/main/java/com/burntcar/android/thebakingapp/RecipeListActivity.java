@@ -18,7 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.burntcar.android.thebakingapp.dummy.DummyContent;
+
 import com.burntcar.android.thebakingapp.restCalls.Recipe;
 import com.burntcar.android.thebakingapp.restCalls.Step;
 
@@ -62,8 +62,7 @@ public class RecipeListActivity extends AppCompatActivity {
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*Toast.makeText(RecipeListActivity.this, recipe.name,
-                        Toast.LENGTH_LONG).show();*/
+
 
                 if (mTwoPane) {
                     RecipeDetailFragment fragment = new RecipeDetailFragment();
@@ -84,9 +83,7 @@ public class RecipeListActivity extends AppCompatActivity {
             }
         });
 
-        //textView.append(recipe.toString());
-       /* Toast.makeText(RecipeListActivity.this, recipe.toString(),
-                Toast.LENGTH_LONG).show();*/
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
