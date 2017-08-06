@@ -3,8 +3,10 @@ package com.burntcar.android.thebakingapp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
@@ -20,7 +22,10 @@ import com.burntcar.android.thebakingapp.dummy.DummyContent;
 import com.burntcar.android.thebakingapp.restCalls.Recipe;
 import com.burntcar.android.thebakingapp.restCalls.Step;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static android.R.attr.fragment;
 
 /**
  * An activity representing a list of Recipes. This activity
@@ -41,6 +46,8 @@ public class RecipeListActivity extends AppCompatActivity {
     Recipe recipe;
     List<Step> steps;
 
+    CardView cardView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +55,34 @@ public class RecipeListActivity extends AppCompatActivity {
 
         recipe = getIntent().getExtras().getParcelable("recipe");
         steps = recipe.steps;
+        cardView = (CardView) findViewById(R.id.ingred_card_view);
+        setTitle(recipe.name);
+
+
+        cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*Toast.makeText(RecipeListActivity.this, recipe.name,
+                        Toast.LENGTH_LONG).show();*/
+
+                if (mTwoPane) {
+                    RecipeDetailFragment fragment = new RecipeDetailFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelableArrayList("ingredients",recipe.ingredients);
+
+                    fragment.setArguments(bundle);
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.recipe_detail_container, fragment)
+                            .commit();
+
+                }else {
+
+                    Intent intent = new Intent(RecipeListActivity.this, RecipeDetailActivity.class);
+                    intent.putParcelableArrayListExtra("ingredients", recipe.ingredients);
+                    startActivity(intent);
+                }
+            }
+        });
 
         //textView.append(recipe.toString());
        /* Toast.makeText(RecipeListActivity.this, recipe.toString(),
@@ -106,22 +141,23 @@ public class RecipeListActivity extends AppCompatActivity {
                     if (mTwoPane) {
                         /*Bundle arguments = new Bundle();
                         arguments.putString(RecipeDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+                        RecipeDetailFragment fragment = new RecipeDetailFragment();*/
                         RecipeDetailFragment fragment = new RecipeDetailFragment();
-                        fragment.setArguments(arguments);
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable("step",steps.get(position));
+                        //bundle.putParcelableArrayList("ingredients",ingredients);
+
+                        fragment.setArguments(bundle);
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.recipe_detail_container, fragment)
-                                .commit();*/
+                                .commit();
                     } else {
-                        Toast.makeText(RecipeListActivity.this, "clicked Index :"+holder.stepTV.getText().toString()+position,
-                                Toast.LENGTH_LONG).show();
+                        /*Toast.makeText(RecipeListActivity.this, "clicked Index :"+holder.stepTV.getText().toString()+position,
+                                Toast.LENGTH_LONG).show();*/
                         Intent intent = new Intent(RecipeListActivity.this, RecipeDetailActivity.class);
                         intent.putExtra("step", mRecipeSteps.get(position));
                         startActivity(intent);
-                        /*Context context = v.getContext();
-                        Intent intent = new Intent(context, RecipeDetailActivity.class);
-                        intent.putExtra(RecipeDetailFragment.ARG_ITEM_ID, holder.mItem.id);
-                        intent.putExtra("recipe", recipe);
-                        context.startActivity(intent);*/
+
                     }
                 }
             });

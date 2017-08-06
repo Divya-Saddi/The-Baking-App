@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by Harshraj on 30-07-2017.
  */
 
-class Ingredient implements Parcelable{
+public class Ingredient implements Parcelable{
 
     @SerializedName("quantity")
     @Expose

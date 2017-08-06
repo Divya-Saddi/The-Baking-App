@@ -17,8 +17,8 @@ public class Recipe implements Parcelable {
 
     public Integer id;
     public String name;
-    public List<Ingredient> ingredients = null;
-    public List<Step> steps = null;
+    public ArrayList<Ingredient> ingredients = null;
+    public ArrayList<Step> steps = null;
     public Integer servings;
     public String image;
 

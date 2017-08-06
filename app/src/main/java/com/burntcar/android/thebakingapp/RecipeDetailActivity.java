@@ -12,7 +12,11 @@ import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+
+import com.burntcar.android.thebakingapp.restCalls.Ingredient;
 import com.burntcar.android.thebakingapp.restCalls.Step;
+
+import java.util.ArrayList;
 
 /**
  * An activity representing a single Recipe detail screen. This
@@ -23,6 +27,7 @@ import com.burntcar.android.thebakingapp.restCalls.Step;
 public class RecipeDetailActivity extends AppCompatActivity {
 
     Step step;
+    ArrayList<Ingredient> ingredients;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,24 +36,24 @@ public class RecipeDetailActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
-        step = getIntent().getExtras().getParcelable("step");
 
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
+                ingredients = getIntent().getParcelableArrayListExtra("ingredients");
+                step = getIntent().getExtras().getParcelable("step");
+                //setTitle("Step " + (step.id+1));
+if(ingredients != null){
+    setTitle("Ingredients");
+}
+        if(step != null){
+            setTitle("Step " + (step.id+1));
+        }
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        Toast.makeText(RecipeDetailActivity.this, "RecipeDetailActivity",
-                Toast.LENGTH_LONG).show();
+        /*Toast.makeText(RecipeDetailActivity.this, "RecipeDetailActivity"+step.toString() ,
+                Toast.LENGTH_LONG).show();*/
         // savedInstanceState is non-null when there is fragment state
         // saved from previous configurations of this activity
         // (e.g. when rotating the screen from portrait to landscape).
@@ -70,6 +75,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
             RecipeDetailFragment fragment = new RecipeDetailFragment();
             Bundle bundle = new Bundle();
             bundle.putParcelable("step",step);
+            bundle.putParcelableArrayList("ingredients",ingredients);
             fragment.setArguments(bundle);
             //fragment.setStep(step);
             getSupportFragmentManager().beginTransaction()

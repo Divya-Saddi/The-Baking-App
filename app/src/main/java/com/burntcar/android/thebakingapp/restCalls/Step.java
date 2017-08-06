@@ -33,6 +33,7 @@ public class Step implements Parcelable{
         description = in.readString();
         videoURL = in.readString();
         thumbnailURL = in.readString();
+        id = in.readInt();
     }
 
     public static final Creator<Step> CREATOR = new Creator<Step>() {
@@ -69,5 +70,6 @@ public class Step implements Parcelable{
         dest.writeString(description);
         dest.writeString(videoURL);
         dest.writeString(thumbnailURL);
+        dest.writeInt(id);
     }
 }
