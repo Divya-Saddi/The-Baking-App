@@ -11,7 +11,6 @@
         android:roundIcon="@drawable/cupcake"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,24 +18,35 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name="com.burntcar.android.thebakingapp.RecipeListActivity"
+            android:name=".RecipeListActivity"
             android:label="@string/title_recipe_list"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:launchMode="singleTask">
-
-        </activity>
-
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".RecipeDetailActivity"
             android:label="@string/title_recipe_detail"
-            android:parentActivityName="com.burntcar.android.thebakingapp.RecipeListActivity"
+            android:parentActivityName=".RecipeListActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.burntcar.android.thebakingapp.RecipeListActivity" />
         </activity>
+
+        <receiver android:name=".BakingAppWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/baking_app_widget_provider_info" />
+        </receiver>
+
+        <service android:name=".ListViewService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
+
 
     </application>
 
