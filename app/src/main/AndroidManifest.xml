@@ -43,8 +43,7 @@
                 android:resource="@xml/baking_app_widget_provider_info" />
         </receiver>
 
-        <service android:name=".ListViewService"
-            android:exported="false"
+        <service android:name="com.burntcar.android.thebakingapp.ListViewService"
             android:permission="android.permission.BIND_REMOTEVIEWS"/>
 
 

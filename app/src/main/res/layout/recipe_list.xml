@@ -29,7 +29,7 @@
                 android:id="@+id/recipe_steps_tv"
                 android:textSize="15sp"
                 tools:text="Chocolate Cookies"
-                android:text="Ingrediants"
+                android:text="Ingredients"
                 android:layout_centerInParent="true"
 
                 />

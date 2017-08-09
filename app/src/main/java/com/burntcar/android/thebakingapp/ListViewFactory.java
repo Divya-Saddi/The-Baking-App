@@ -34,13 +34,15 @@ class ListViewFactory implements RemoteViewsService.RemoteViewsFactory {
      int mAppWidgetId;
 
     public ListViewFactory(Context context, Intent intent) {
+
+        Log.v("widget 12","ListViewFactory ");
         mContext = context;
-        mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-                AppWidgetManager.INVALID_APPWIDGET_ID);
+       /* mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+                AppWidgetManager.INVALID_APPWIDGET_ID);*/
     }
     @Override
     public void onCreate() {
-
+        Log.v("widget 12","onCreate ");
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl("https://d17h27t6h515a5.cloudfront.net/")
                 .addConverterFactory(GsonConverterFactory.create());
@@ -69,24 +71,25 @@ class ListViewFactory implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public void onDataSetChanged() {
 
+
     }
 
     @Override
     public void onDestroy() {
-
+        recipes.clear();
     }
 
     @Override
     public int getCount() {
-        if(recipes != null)
+        //if(recipes != null)
             return recipes.size();
 
-        else  return 0;
+       // else  return 0;
     }
 
     @Override
     public RemoteViews getViewAt(int position) {
-
+        Log.v("widget12","getViewAt "+position);
         RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.list_view_item);
         String recipeName = recipes.get(position).name;
         List<Ingredient> ingredients = recipes.get(position).ingredients;
@@ -95,11 +98,11 @@ class ListViewFactory implements RemoteViewsService.RemoteViewsFactory {
         for(Ingredient ingredient:ingredients){
             x = x +""+ (++i)+". "+ ingredient.ingredient+"\n";
         }
-        rv.setTextViewText(R.id.list_view_item_heading_tv,recipeName);
+        rv.setTextViewText(R.id.item_heading_tv,recipeName);
 
-        rv.setTextViewText(R.id.list_view_item_tv,x);
+        rv.setTextViewText(R.id.item_tv,x);
 
-        Log.v("widget","getViewAt "+position);
+        Log.v("widget1234","getViewAt "+position);
         return rv;
 
     }
@@ -121,6 +124,6 @@ class ListViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public boolean hasStableIds() {
-        return false;
+        return true;
     }
 }
