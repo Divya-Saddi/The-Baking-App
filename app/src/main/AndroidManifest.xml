@@ -22,7 +22,7 @@
             android:name=".RecipeListActivity"
             android:label="@string/title_recipe_list"
             android:launchMode="singleTask"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".RecipeDetailActivity"
             android:label="@string/title_recipe_detail"
@@ -33,20 +33,20 @@
                 android:value="com.burntcar.android.thebakingapp.RecipeListActivity" />
         </activity>
 
-        <receiver android:name=".BakingAppWidgetProvider">
+        <receiver android:name=".BakingAppWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/baking_app_widget_provider_info" />
+                android:resource="@xml/baking_app_widget_info" />
         </receiver>
 
-        <service android:name="com.burntcar.android.thebakingapp.ListViewService"
-            android:permission="android.permission.BIND_REMOTEVIEWS"/>
+        <service android:name=".WidgetService"
+           android:permission="android.permission.BIND_REMOTEVIEWS">
 
-
+        </service>
     </application>
 
 </manifest>

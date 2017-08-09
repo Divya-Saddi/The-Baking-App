@@ -4,12 +4,12 @@ import android.content.Intent;
 import android.widget.RemoteViewsService;
 
 /**
- * Created by Harshraj on 08-08-2017.
+ * Created by Harshraj on 09-08-2017.
  */
 
-public class ListViewService extends RemoteViewsService {
+public class WidgetService extends RemoteViewsService {
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        return new ListViewFactory(this.getApplicationContext(), intent);
+        return new WidgetFactory(this.getApplicationContext(), intent);
     }
 }

@@ -3,7 +3,6 @@ package com.burntcar.android.thebakingapp;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -13,6 +12,8 @@ import com.burntcar.android.thebakingapp.restCalls.BakingAppClient;
 import com.burntcar.android.thebakingapp.restCalls.Ingredient;
 import com.burntcar.android.thebakingapp.restCalls.Recipe;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -21,28 +22,26 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static android.media.CamcorderProfile.get;
-
 /**
- * Created by Harshraj on 08-08-2017.
+ * Created by Harshraj on 09-08-2017.
  */
 
-class ListViewFactory implements RemoteViewsService.RemoteViewsFactory {
+public class WidgetFactory implements RemoteViewsService.RemoteViewsFactory {
 
-    List<Recipe> recipes;
-    Context mContext;
-     int mAppWidgetId;
+    private Context mContext;
+    private int mAppWidgetId;
+    List<Recipe> recipes = null ;
 
-    public ListViewFactory(Context context, Intent intent) {
-
-        Log.v("widget 12","ListViewFactory ");
-        mContext = context;
-       /* mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-                AppWidgetManager.INVALID_APPWIDGET_ID);*/
+    public WidgetFactory(Context applicationContext, Intent intent) {
+        mContext = applicationContext;
+        mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+                AppWidgetManager.INVALID_APPWIDGET_ID);
     }
+
     @Override
     public void onCreate() {
-        Log.v("widget 12","onCreate ");
+
+
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl("https://d17h27t6h515a5.cloudfront.net/")
                 .addConverterFactory(GsonConverterFactory.create());
@@ -55,56 +54,55 @@ class ListViewFactory implements RemoteViewsService.RemoteViewsFactory {
         call.enqueue(new Callback<List<Recipe>>() {
             @Override
             public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
+
                 recipes = response.body();
-                Log.v("widget","sdfdsf"+recipes.size());
 
             }
 
             @Override
             public void onFailure(Call<List<Recipe>> call, Throwable t) {
-                Log.v("widget","sdfasdsaddsf");
+
             }
         });
-
+        
     }
 
     @Override
     public void onDataSetChanged() {
 
-
     }
 
     @Override
     public void onDestroy() {
-        recipes.clear();
+        //recipes.clear();
     }
 
     @Override
     public int getCount() {
-        //if(recipes != null)
-            return recipes.size();
 
-       // else  return 0;
+        if(recipes != null )
+
+        return recipes.size();
+
+        else return 0;
     }
 
     @Override
     public RemoteViews getViewAt(int position) {
-        Log.v("widget12","getViewAt "+position);
-        RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.list_view_item);
-        String recipeName = recipes.get(position).name;
-        List<Ingredient> ingredients = recipes.get(position).ingredients;
+
+        Recipe recipe = recipes.get(position);
+        List<Ingredient> ingredients = recipe.ingredients;
         String x = "";
-        int i = 0;
-        for(Ingredient ingredient:ingredients){
-            x = x +""+ (++i)+". "+ ingredient.ingredient+"\n";
+        for(Ingredient ingredient: ingredients){
+            x = x + ingredient.ingredient +" \n";
         }
-        rv.setTextViewText(R.id.item_heading_tv,recipeName);
 
-        rv.setTextViewText(R.id.item_tv,x);
 
-        Log.v("widget1234","getViewAt "+position);
+        RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.widget_lv_item);
+        rv.setTextViewText(R.id.tv1, "dfsf");
+        /*rv.setTextViewText(R.id.tv2, x);*/
+
         return rv;
-
     }
 
     @Override
