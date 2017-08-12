@@ -1,6 +1,8 @@
 package com.burntcar.android.thebakingapp;
 
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,45 +33,26 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 import static android.R.attr.button;
 
 
-/**
- * A fragment representing a single Recipe detail screen.
- * This fragment is either contained in a {@link RecipeListActivity}
- * in two-pane mode (on tablets) or a {@link RecipeDetailActivity}
- * on handsets.
- */
+
 public class RecipeDetailFragment extends Fragment {
 
 
-    /**
-     * The fragment argument representing the item ID that this fragment
-     * represents.
-     */
-   //public static final String ARG_ITEM_ID = "item_id";
+    private Step step;
+    private  SimpleExoPlayer simpleExoPlayer;
+    private ArrayList<Ingredient> ingredients;
+    private ArrayList<Step> stepsList;
+    private int position;
+    private boolean videoplaying;
+    private boolean twoPane = false;
 
-    /**
-     * The dummy content this fragment is presenting.
-     */
-   // private DummyContent.DummyItem mItem;
-
-    Step step;
-
-    SimpleExoPlayer simpleExoPlayer;
-    //SimpleExoPlayerView exoPlayerView;
-
-    ArrayList<Ingredient> ingredients;
-    ArrayList<Step> stepsList;
-    int position;
-    boolean videoplaying;
-    boolean twoPane = false;
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
     public RecipeDetailFragment() {
     }
 
@@ -80,11 +64,8 @@ public class RecipeDetailFragment extends Fragment {
         ingredients = getArguments().getParcelableArrayList("ingredients");
         stepsList = getArguments().getParcelableArrayList("stepsList");
         position = getArguments().getInt("position");
-        position = getArguments().getInt("position");
         twoPane = getArguments().getBoolean("twoPane");
         simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(),new DefaultTrackSelector());
-
-//if(twoPane) Toast.makeText(getActivity(),"Two Pane",Toast.LENGTH_SHORT).show();
 
 
 if(step != null){
@@ -115,11 +96,32 @@ if(step != null){
 
         }
 
-        // Show the dummy content as text in a TextView.
         if(step != null){
-            //((Button)rootView.findViewById(R.id.next_step_btn)).setVisibility(View.VISIBLE);
+
             ((TextView) rootView.findViewById(R.id.recipe_detail)).setText(step.shortDescription);
             ((TextView) rootView.findViewById(R.id.recipe_desc_tv)).setText(step.description);
+
+            if(step.thumbnailURL.contains(".jpeg") || step.thumbnailURL.contains(".jpg") || step.thumbnailURL.contains("png")) {
+                URL url = null;
+                try {
+                    url = new URL(step.thumbnailURL);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                Bitmap bmp = null;
+                try {
+                    bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                ImageView imageView = (ImageView) rootView.findViewById(R.id.thumbnail_img);
+                imageView.setVisibility(View.VISIBLE);
+                imageView.setImageBitmap(bmp);
+
+            }else {
+                rootView.findViewById(R.id.no_thumbnail_tv).setVisibility(View.VISIBLE);
+            }
 
             if(step.videoURL != null && !step.videoURL.isEmpty()) {
                 videoplaying= true;
@@ -158,6 +160,28 @@ if(step != null){
 
                         Step currStep = stepsList.get(position);
 
+                        if(currStep.thumbnailURL.contains(".jpeg") || currStep.thumbnailURL.contains(".jpg") || currStep.thumbnailURL.contains("png")) {
+                            URL url = null;
+                            try {
+                                url = new URL(currStep.thumbnailURL);
+                            } catch (MalformedURLException e) {
+                                e.printStackTrace();
+                            }
+                            Bitmap bmp = null;
+                            try {
+                                bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            ImageView imageView = (ImageView) rootView.findViewById(R.id.thumbnail_img);
+                            imageView.setVisibility(View.VISIBLE);
+                            imageView.setImageBitmap(bmp);
+
+                        }else {
+                            rootView.findViewById(R.id.no_thumbnail_tv).setVisibility(View.VISIBLE);
+                        }
+
 
                         ((TextView) rootView.findViewById(R.id.recipe_detail)).setText(currStep.shortDescription);
                         ((TextView) rootView.findViewById(R.id.recipe_desc_tv)).setText(currStep.description);
@@ -185,17 +209,19 @@ if(step != null){
             }
 
         }
-
-
-
-
-
         return rootView;
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        simpleExoPlayer.release();
+    }
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
         simpleExoPlayer.release();
     }
 }

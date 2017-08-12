@@ -10,13 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/cardview_light_background"
-        android:text="Ingredients"
+        android:text="@string/ingredients"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:background="@color/colorPrimaryDark"/>
+        android:background="@color/colorPrimary"/>
     <ListView
         android:padding="8dp"
-        android:background="@color/cardview_light_background"
+        android:background="@color/backgroundColor"
         android:id="@+id/widget_lv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

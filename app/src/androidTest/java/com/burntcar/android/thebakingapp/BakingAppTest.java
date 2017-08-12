@@ -40,8 +40,9 @@ public class BakingAppTest {
 
 
     @Test
-    public void EntireAppUiFlowTest(){
+    public void EntireAppUiFlowTest() {
 
+        //Note: These test cases are for mobile screen only!
 
         onView(withId(R.id.recyclerview_recipe_name)).check(matches(hasDescendant(withText("Nutella Pie"))));
 
@@ -49,7 +50,6 @@ public class BakingAppTest {
         onView(nthChildOf(withId(R.id.recyclerview_recipe_name), 1)).check(matches(hasDescendant(withText("Brownies"))));
         onView(nthChildOf(withId(R.id.recyclerview_recipe_name), 2)).check(matches(hasDescendant(withText("Yellow Cake"))));
         onView(nthChildOf(withId(R.id.recyclerview_recipe_name), 3)).check(matches(hasDescendant(withText("Cheesecake"))));
-
 
 
         onView(withId(R.id.recyclerview_recipe_name))
@@ -68,10 +68,6 @@ public class BakingAppTest {
                 .perform(click());
 
         onView((withId(R.id.recipe_detail))).check(matches(withText("Starting prep")));
-        onView((withId(R.id.next_step_btn)))
-                .perform(click());
-        onView((withId(R.id.recipe_desc_tv))).check(matches(withText("2. Whisk the graham cracker crumbs, 50 grams (1/4 cup) of sugar, and 1/2 teaspoon of salt together in a medium bowl. Pour the melted butter and 1 teaspoon of vanilla into the dry ingredients and stir together until evenly mixed.")));
-
     }
 
 
@@ -79,7 +75,7 @@ public class BakingAppTest {
         return new TypeSafeMatcher<View>() {
             @Override
             public void describeTo(Description description) {
-                description.appendText("with "+childPosition+" child view of type parentMatcher");
+                description.appendText("with " + childPosition + " child view of type parentMatcher");
             }
 
             @Override
@@ -94,9 +90,6 @@ public class BakingAppTest {
             }
         };
     }
-
-
-
 
 
 }

@@ -8,24 +8,19 @@ import android.net.Uri;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-import com.burntcar.android.thebakingapp.restCalls.BakingAppClient;
+import com.burntcar.android.thebakingapp.restCalls.Ingredient;
 import com.burntcar.android.thebakingapp.restCalls.Recipe;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * Implementation of App Widget functionality.
- */
+
+
 public class BakingAppWidget extends AppWidgetProvider {
 
-    static List<Recipe> recipes;
+
+
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
@@ -33,15 +28,8 @@ public class BakingAppWidget extends AppWidgetProvider {
         Intent intent = new Intent(context, WidgetService.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-        Log.e("updateAppWidget","updateAppWidget");
-        //CharSequence widgetText = context.getString(R.string.appwidget_text);
-        // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.baking_app_widget);
-        views.setRemoteAdapter(R.id.widget_lv,intent);
-        /*views.setTextViewText(R.id.appwidget_text, "Ingredients");*/
-
-        Log.e("updateAppWidget1","updateAppWidget");
-        // Instruct the widget manager to update the widget
+        views.setRemoteAdapter(R.id.widget_lv, intent);
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
@@ -49,22 +37,42 @@ public class BakingAppWidget extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 
 
-
-        // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
         }
-        //super.onUpdate(context, appWidgetManager, appWidgetIds);
+    }
+
+    static void updateFromActivity(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds,int itemClicked, ArrayList<Recipe> recipes){
+
+
+
+        Log.i("qwerty",itemClicked+"");
+
+        for (int appWidgetId : appWidgetIds) {
+
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.updated_widget_layout);
+
+            List<Ingredient> ingredients = recipes.get(itemClicked).ingredients;
+            int i=0;
+            String x = "";
+            for(Ingredient ingredient: ingredients){
+                x = x + (++i)+". "+ ingredient.ingredient.substring(0,1).toUpperCase()+ingredient.ingredient.substring(1) +" \n";
+            }
+
+            views.setTextViewText(R.id.widget_title,recipes.get(itemClicked).name+" Ingredients");
+            views.setTextViewText(R.id.widget_content,x);
+
+            appWidgetManager.updateAppWidget(appWidgetId,views);
+        }
     }
 
     @Override
     public void onEnabled(Context context) {
-        // Enter relevant functionality for when the first widget is created
     }
 
     @Override
     public void onDisabled(Context context) {
-        // Enter relevant functionality for when the last widget is disabled
     }
+
 }
 

@@ -21,19 +21,29 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="16dp"
+
             >
 
-
+            <ImageView
+                android:id="@+id/recipe_iv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/brownies"
+               android:scaleType="centerCrop"
+                />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/recipe_name_tv"
                 android:textSize="20sp"
-                tools:text="Chocolate Cookies"
+                tools:text="brownies"
                 android:layout_centerInParent="true"
-
+                android:background="@color/backgroundColor"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:textStyle="bold"
                 />
 
 

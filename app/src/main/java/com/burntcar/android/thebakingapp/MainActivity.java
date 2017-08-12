@@ -1,19 +1,20 @@
 package com.burntcar.android.thebakingapp;
 
-import android.app.Activity;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.burntcar.android.thebakingapp.restCalls.BakingAppClient;
@@ -32,7 +33,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements RecipeNameAdapter.ListItemClickListener {
 
-    //@BindView(R.id.hello_world) TextView helloTv;
+
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
 
@@ -43,20 +44,22 @@ public class MainActivity extends AppCompatActivity implements RecipeNameAdapter
 
     ArrayList<Recipe> recipes;
 
+    String baseUrl;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-       ButterKnife.bind(this);
+        ButterKnife.bind(this);
         recipeNameAdapter = new RecipeNameAdapter(this);
 
-
+        baseUrl = getString(R.string.baseUrl);
 
         progressBar.setVisibility(View.VISIBLE);
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 2));
-        }else{
+        } else {
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
@@ -67,9 +70,8 @@ public class MainActivity extends AppCompatActivity implements RecipeNameAdapter
         recyclerView.setAdapter(recipeNameAdapter);
 
 
-
         Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl("https://d17h27t6h515a5.cloudfront.net/")
+                .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create());
 
         Retrofit retrofit = builder.build();
@@ -81,10 +83,6 @@ public class MainActivity extends AppCompatActivity implements RecipeNameAdapter
             @Override
             public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
                 recipes = (ArrayList<Recipe>) response.body();
-
-                /*for(Recipe recipe: recipes){
-                    helloTv.append(recipe.toString());
-                }*/
                 progressBar.setVisibility(View.INVISIBLE);
                 recipeNameAdapter.setData(recipes);
 
@@ -96,12 +94,12 @@ public class MainActivity extends AppCompatActivity implements RecipeNameAdapter
             public void onFailure(Call<List<Recipe>> call, Throwable t) {
                 Toast.makeText(MainActivity.this, "Problem Loading data check connection",
                         Toast.LENGTH_LONG).show();
-               // helloTv.setText(t.toString());
+
             }
         });
 
 
-        if(isNetworkAvailable() == false){
+        if (isNetworkAvailable() == false) {
             Toast.makeText(getBaseContext(),
                     "No Internet connection available", Toast.LENGTH_LONG).show();
             progressBar.setVisibility(View.INVISIBLE);
@@ -110,17 +108,18 @@ public class MainActivity extends AppCompatActivity implements RecipeNameAdapter
 
     @Override
     public void onListItemClicked(int clickedItemIndex) {
-        /*Toast.makeText(MainActivity.this, "clicked Index"+clickedItemIndex,
-                Toast.LENGTH_LONG).show();*/
 
         Recipe recipe = recipes.get(clickedItemIndex);
 
         Intent intent = new Intent(MainActivity.this, RecipeListActivity.class);
         intent.putExtra("recipe", recipe);
-        intent.putParcelableArrayListExtra("recipeList",recipes);
+        intent.putParcelableArrayListExtra("recipeList", recipes);
         startActivity(intent);
-
-
+        //Update Widget
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this,BakingAppWidget.class));
+        BakingAppWidget.updateFromActivity(this,appWidgetManager,appWidgetIds,clickedItemIndex,recipes);
+        Log.i("mainActivity","intentSent");
     }
 
     private boolean isNetworkAvailable() {

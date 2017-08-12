@@ -5,11 +5,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.burntcar.android.thebakingapp.restCalls.Recipe;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -61,6 +61,28 @@ public class RecipeNameAdapter extends RecyclerView.Adapter<RecipeNameAdapter.Re
 
         holder.RecipeNametextView.setText(recipeName);
 
+        String imageUrl = recipe.image;
+
+        if(!(imageUrl.contains(".jpg") || imageUrl.contains(".png") || imageUrl.contains(".jpg"))) {
+            //as the image url is empty I'm populating the ImageViews on My own!
+            switch (position) {
+                case 0:
+                    holder.imageView.setImageResource(R.drawable.nutella_pie);
+                    break;
+                case 1:
+                    holder.imageView.setImageResource(R.drawable.brownies);
+                    break;
+                case 2:
+                    holder.imageView.setImageResource(R.drawable.moist_yellow_cake);
+                    break;
+                case 3:
+                    holder.imageView.setImageResource(R.drawable.cheesecake);
+                    break;
+                default:
+                    holder.imageView.setImageResource(R.drawable.cupcake);
+            }
+
+        }
     }
 
     @Override
@@ -72,11 +94,13 @@ public class RecipeNameAdapter extends RecyclerView.Adapter<RecipeNameAdapter.Re
     public class RecipeNameAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView RecipeNametextView;
+        ImageView imageView;
 
         public RecipeNameAdapterViewHolder(View itemView) {
             super(itemView);
 
             RecipeNametextView = (TextView) itemView.findViewById(R.id.recipe_name_tv);
+            imageView = (ImageView) itemView.findViewById(R.id.recipe_iv);
             itemView.setOnClickListener(this);
         }
 

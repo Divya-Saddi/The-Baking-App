@@ -16,8 +16,7 @@
         android:id="@+id/card_view"
         card_view:cardUseCompatPadding="true"
         card_view:cardElevation="5dp"
-android:backgroundTint="@color/cardColor"
-        >
+android:backgroundTint="@color/cardColor">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -26,14 +25,12 @@ android:backgroundTint="@color/cardColor"
             >
 
 
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/recipe_steps_tv"
                 android:textSize="15sp"
                 tools:text="Chocolate Cookies Chocolate Cookies Chocolate Cookies Chocolate Cookies Chocolate Cookies"
-
                 android:gravity="left"
                 android:textAlignment="gravity"
 
