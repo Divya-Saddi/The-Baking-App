@@ -44,7 +44,8 @@ public class RecipeListActivity extends AppCompatActivity {
     private boolean mTwoPane;
 
     Recipe recipe;
-    List<Step> steps;
+    ArrayList<Step> steps;
+    ArrayList<Recipe> recipeList;
 
     CardView cardView;
 
@@ -54,10 +55,13 @@ public class RecipeListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_recipe_list);
 
         recipe = getIntent().getExtras().getParcelable("recipe");
+        recipeList = getIntent().getExtras().getParcelableArrayList("recipeList");
         steps = recipe.steps;
         cardView = (CardView) findViewById(R.id.ingred_card_view);
         setTitle(recipe.name);
 
+       /* Toast.makeText(RecipeListActivity.this, "ArrayList recived size:"+recipeList.size(),
+                Toast.LENGTH_LONG).show();*/
 
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,6 +146,7 @@ public class RecipeListActivity extends AppCompatActivity {
                         RecipeDetailFragment fragment = new RecipeDetailFragment();
                         Bundle bundle = new Bundle();
                         bundle.putParcelable("step",steps.get(position));
+                        bundle.putBoolean("twoPane",true);
                         //bundle.putParcelableArrayList("ingredients",ingredients);
 
                         fragment.setArguments(bundle);
@@ -153,6 +158,8 @@ public class RecipeListActivity extends AppCompatActivity {
                                 Toast.LENGTH_LONG).show();*/
                         Intent intent = new Intent(RecipeListActivity.this, RecipeDetailActivity.class);
                         intent.putExtra("step", mRecipeSteps.get(position));
+                        intent.putExtra("position",position);
+                        intent.putParcelableArrayListExtra("stepsList",steps);
                         startActivity(intent);
 
                     }

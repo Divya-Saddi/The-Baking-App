@@ -26,9 +26,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/recipe_steps_tv"
+                android:id="@+id/recipe_steps_tv1"
                 android:textSize="15sp"
-                tools:text="Chocolate Cookies"
+                tools:text="Ingredients"
                 android:text="Ingredients"
                 android:layout_centerInParent="true"
 

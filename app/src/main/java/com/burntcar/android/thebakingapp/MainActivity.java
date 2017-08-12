@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.burntcar.android.thebakingapp.restCalls.BakingAppClient;
 import com.burntcar.android.thebakingapp.restCalls.Recipe;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements RecipeNameAdapter
 
     RecipeNameAdapter recipeNameAdapter;
 
-    List<Recipe> recipes;
+    ArrayList<Recipe> recipes;
 
 
     @Override
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements RecipeNameAdapter
         call.enqueue(new Callback<List<Recipe>>() {
             @Override
             public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
-                recipes = response.body();
+                recipes = (ArrayList<Recipe>) response.body();
 
                 /*for(Recipe recipe: recipes){
                     helloTv.append(recipe.toString());
@@ -101,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements RecipeNameAdapter
 
         Intent intent = new Intent(MainActivity.this, RecipeListActivity.class);
         intent.putExtra("recipe", recipe);
+        intent.putParcelableArrayListExtra("recipeList",recipes);
         startActivity(intent);
 
 

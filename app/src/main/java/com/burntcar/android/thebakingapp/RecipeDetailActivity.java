@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 
 import com.burntcar.android.thebakingapp.restCalls.Ingredient;
+import com.burntcar.android.thebakingapp.restCalls.Recipe;
 import com.burntcar.android.thebakingapp.restCalls.Step;
 
 import java.util.ArrayList;
@@ -28,6 +29,8 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
     Step step;
     ArrayList<Ingredient> ingredients;
+    ArrayList<Step> stepsList;
+    int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,14 +40,19 @@ public class RecipeDetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-                ingredients = getIntent().getParcelableArrayListExtra("ingredients");
-                step = getIntent().getExtras().getParcelable("step");
-                //setTitle("Step " + (step.id+1));
-if(ingredients != null){
-    setTitle("Ingredients");
-}
-        if(step != null){
-            setTitle("Step " + (step.id+1));
+        ingredients = getIntent().getParcelableArrayListExtra("ingredients");
+        step = getIntent().getExtras().getParcelable("step");
+        position = getIntent().getExtras().getInt("position");
+        stepsList = getIntent().getExtras().getParcelableArrayList("stepsList");
+
+        /*Toast.makeText(RecipeDetailActivity.this, "position " + position + " recipeList : " + stepsList.size(),
+                Toast.LENGTH_LONG).show();*/
+        //setTitle("Step " + (step.id+1));
+        if (ingredients != null) {
+            setTitle("Ingredients");
+        }
+        if (step != null) {
+            setTitle("Recipe Steps");
         }
 
         // Show the Up button in the action bar.
@@ -74,8 +82,11 @@ if(ingredients != null){
 
             RecipeDetailFragment fragment = new RecipeDetailFragment();
             Bundle bundle = new Bundle();
-            bundle.putParcelable("step",step);
-            bundle.putParcelableArrayList("ingredients",ingredients);
+            bundle.putParcelable("step", step);
+            bundle.putParcelableArrayList("ingredients", ingredients);
+            bundle.putParcelableArrayList("stepsList",stepsList);
+            bundle.putInt("position",position);
+
             fragment.setArguments(bundle);
             //fragment.setStep(step);
             getSupportFragmentManager().beginTransaction()
