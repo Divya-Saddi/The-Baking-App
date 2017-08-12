@@ -8,7 +8,7 @@
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
     android:showDividers="middle"
-    android:background="#ECEFF1"
+    android:background="@color/backgroundColor"
     tools:context="com.burntcar.android.thebakingapp.RecipeListActivity"
     xmlns:card_view="http://schemas.android.com/apk/res-auto">
 
@@ -28,7 +28,7 @@
             android:id="@+id/ingred_card_view"
             card_view:cardUseCompatPadding="true"
             card_view:cardElevation="5dp"
-
+android:backgroundTint="@color/cardColor"
             >
 
             <RelativeLayout

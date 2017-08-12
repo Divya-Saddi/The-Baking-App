@@ -1,8 +1,11 @@
 package com.burntcar.android.thebakingapp;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -47,6 +50,9 @@ public class MainActivity extends AppCompatActivity implements RecipeNameAdapter
         setContentView(R.layout.activity_main);
        ButterKnife.bind(this);
         recipeNameAdapter = new RecipeNameAdapter(this);
+
+
+
         progressBar.setVisibility(View.VISIBLE);
         if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
             recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 2));
@@ -59,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements RecipeNameAdapter
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(recipeNameAdapter);
+
+
 
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl("https://d17h27t6h515a5.cloudfront.net/")
@@ -86,11 +94,18 @@ public class MainActivity extends AppCompatActivity implements RecipeNameAdapter
 
             @Override
             public void onFailure(Call<List<Recipe>> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "Data did not load"+t.toString(),
+                Toast.makeText(MainActivity.this, "Problem Loading data check connection",
                         Toast.LENGTH_LONG).show();
                // helloTv.setText(t.toString());
             }
         });
+
+
+        if(isNetworkAvailable() == false){
+            Toast.makeText(getBaseContext(),
+                    "No Internet connection available", Toast.LENGTH_LONG).show();
+            progressBar.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -106,5 +121,12 @@ public class MainActivity extends AppCompatActivity implements RecipeNameAdapter
         startActivity(intent);
 
 
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

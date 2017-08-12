@@ -7,6 +7,7 @@
     android:orientation="vertical"
     tools:context="com.burntcar.android.thebakingapp.RecipeDetailFragment"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:background="@color/backgroundColor"
     >
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
 
@@ -39,7 +40,7 @@ tools:text="title"
         android:id="@+id/card_view"
         card_view:cardUseCompatPadding="true"
         card_view:cardElevation="5dp"
-
+android:backgroundTint="@color/cardColor"
         >
 
         <RelativeLayout
@@ -73,5 +74,6 @@ tools:text="title"
         android:layout_height="wrap_content"
         android:text="Next Step "
         android:visibility="invisible"
-        android:backgroundTint="#B0BEC5"/>
+        android:backgroundTint="@color/btnColor"
+        />
 </LinearLayout>
