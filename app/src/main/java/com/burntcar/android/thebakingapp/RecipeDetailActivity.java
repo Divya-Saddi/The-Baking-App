@@ -16,10 +16,10 @@ import java.util.ArrayList;
 
 public class RecipeDetailActivity extends AppCompatActivity {
 
-    Step step;
-    ArrayList<Ingredient> ingredients;
-    ArrayList<Step> stepsList;
-    int position;
+    private Step step;
+    private ArrayList<Ingredient> ingredients;
+    private ArrayList<Step> stepsList;
+    private  int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -27,7 +27,7 @@ public class WidgetFactory implements RemoteViewsService.RemoteViewsFactory  {
 
     private Context mContext;
     private int mAppWidgetId;
-     List<Recipe> recipes ;
+    private List<Recipe> recipes ;
 
     public WidgetFactory(Context applicationContext, Intent intent) {
 

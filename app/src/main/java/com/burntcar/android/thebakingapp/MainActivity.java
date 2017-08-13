@@ -8,6 +8,7 @@ import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -35,16 +36,16 @@ public class MainActivity extends AppCompatActivity implements RecipeNameAdapter
 
 
     @BindView(R.id.progress_bar)
-    ProgressBar progressBar;
+     ProgressBar progressBar;
 
     @BindView(R.id.recyclerview_recipe_name)
-    RecyclerView recyclerView;
+     RecyclerView recyclerView;
 
-    RecipeNameAdapter recipeNameAdapter;
+    private RecipeNameAdapter recipeNameAdapter;
 
-    ArrayList<Recipe> recipes;
+    private ArrayList<Recipe> recipes;
 
-    String baseUrl;
+    private String baseUrl;
 
 
     @Override
@@ -79,27 +80,29 @@ public class MainActivity extends AppCompatActivity implements RecipeNameAdapter
         BakingAppClient client = retrofit.create(BakingAppClient.class);
         Call<List<Recipe>> call = client.recipesForApp();
 
-        call.enqueue(new Callback<List<Recipe>>() {
-            @Override
-            public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
-                recipes = (ArrayList<Recipe>) response.body();
-                progressBar.setVisibility(View.INVISIBLE);
-                recipeNameAdapter.setData(recipes);
+        if (isNetworkAvailable()) {
+            call.enqueue(new Callback<List<Recipe>>() {
+                @Override
+                public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
+                    recipes = (ArrayList<Recipe>) response.body();
+                    progressBar.setVisibility(View.INVISIBLE);
+                    recipeNameAdapter.setData(recipes);
 
-                Toast.makeText(MainActivity.this, "Recipes loaded",
-                        Toast.LENGTH_LONG).show();
-            }
+                    Toast.makeText(MainActivity.this, "Recipes loaded",
+                            Toast.LENGTH_LONG).show();
+                }
 
-            @Override
-            public void onFailure(Call<List<Recipe>> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "Problem Loading data check connection",
-                        Toast.LENGTH_LONG).show();
-
-            }
-        });
+                @Override
+                public void onFailure(Call<List<Recipe>> call, Throwable t) {
+                    Toast.makeText(MainActivity.this, "Problem Loading data check connection",
+                            Toast.LENGTH_LONG).show();
 
 
-        if (isNetworkAvailable() == false) {
+                }
+            });
+        }
+
+        if (!isNetworkAvailable()) {
             Toast.makeText(getBaseContext(),
                     "No Internet connection available", Toast.LENGTH_LONG).show();
             progressBar.setVisibility(View.INVISIBLE);
@@ -117,9 +120,9 @@ public class MainActivity extends AppCompatActivity implements RecipeNameAdapter
         startActivity(intent);
         //Update Widget
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this,BakingAppWidget.class));
-        BakingAppWidget.updateFromActivity(this,appWidgetManager,appWidgetIds,clickedItemIndex,recipes);
-        Log.i("mainActivity","intentSent");
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, BakingAppWidget.class));
+        BakingAppWidget.updateFromActivity(this, appWidgetManager, appWidgetIds, clickedItemIndex, recipes);
+        Log.i("mainActivity", "intentSent");
     }
 
     private boolean isNetworkAvailable() {

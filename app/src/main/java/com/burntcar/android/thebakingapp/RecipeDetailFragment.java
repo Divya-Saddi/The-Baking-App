@@ -7,6 +7,7 @@ import android.net.Uri;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.squareup.picasso.Picasso;
 
 
 import java.io.IOException;
@@ -52,6 +54,8 @@ public class RecipeDetailFragment extends Fragment {
     private int position;
     private boolean videoplaying;
     private boolean twoPane = false;
+    long curPosition;
+    MediaSource mediaSource;
 
     public RecipeDetailFragment() {
     }
@@ -65,11 +69,15 @@ public class RecipeDetailFragment extends Fragment {
         stepsList = getArguments().getParcelableArrayList("stepsList");
         position = getArguments().getInt("position");
         twoPane = getArguments().getBoolean("twoPane");
-        simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(),new DefaultTrackSelector());
+
 
 
 if(step != null){
-    MediaSource mediaSource =new ExtractorMediaSource(Uri.parse(step.videoURL), new DefaultDataSourceFactory(
+
+    if(simpleExoPlayer == null) {
+        simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), new DefaultTrackSelector());
+    }
+    mediaSource =new ExtractorMediaSource(Uri.parse(step.videoURL), new DefaultDataSourceFactory(
             getActivity(), "donno string"), new DefaultExtractorsFactory(), null, null);
     simpleExoPlayer.prepare(mediaSource);
     simpleExoPlayer.setPlayWhenReady(true);
@@ -102,22 +110,16 @@ if(step != null){
             ((TextView) rootView.findViewById(R.id.recipe_desc_tv)).setText(step.description);
 
             if(step.thumbnailURL.contains(".jpeg") || step.thumbnailURL.contains(".jpg") || step.thumbnailURL.contains("png")) {
-                URL url = null;
-                try {
-                    url = new URL(step.thumbnailURL);
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-                Bitmap bmp = null;
-                try {
-                    bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+
 
                 ImageView imageView = (ImageView) rootView.findViewById(R.id.thumbnail_img);
                 imageView.setVisibility(View.VISIBLE);
-                imageView.setImageBitmap(bmp);
+
+                Picasso.with(getContext())
+                        .load(step.thumbnailURL)
+                        .error(R.drawable.cupcake)
+                        .placeholder(R.drawable.cupcake)
+                        .into(imageView);
 
             }else {
                 rootView.findViewById(R.id.no_thumbnail_tv).setVisibility(View.VISIBLE);
@@ -161,22 +163,15 @@ if(step != null){
                         Step currStep = stepsList.get(position);
 
                         if(currStep.thumbnailURL.contains(".jpeg") || currStep.thumbnailURL.contains(".jpg") || currStep.thumbnailURL.contains("png")) {
-                            URL url = null;
-                            try {
-                                url = new URL(currStep.thumbnailURL);
-                            } catch (MalformedURLException e) {
-                                e.printStackTrace();
-                            }
-                            Bitmap bmp = null;
-                            try {
-                                bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
 
                             ImageView imageView = (ImageView) rootView.findViewById(R.id.thumbnail_img);
                             imageView.setVisibility(View.VISIBLE);
-                            imageView.setImageBitmap(bmp);
+
+                            Picasso.with(getContext())
+                                    .load(step.thumbnailURL)
+                                    .error(R.drawable.cupcake)
+                                    .placeholder(R.drawable.cupcake)
+                                    .into(imageView);
 
                         }else {
                             rootView.findViewById(R.id.no_thumbnail_tv).setVisibility(View.VISIBLE);
@@ -186,7 +181,7 @@ if(step != null){
                         ((TextView) rootView.findViewById(R.id.recipe_detail)).setText(currStep.shortDescription);
                         ((TextView) rootView.findViewById(R.id.recipe_desc_tv)).setText(currStep.description);
 
-                        if (currStep.videoURL != null && !currStep.videoURL.isEmpty()) {
+                        if (!TextUtils.isEmpty(currStep.videoURL)) {
 
                             simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), new DefaultTrackSelector());
 
@@ -215,13 +210,35 @@ if(step != null){
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        simpleExoPlayer.release();
+        releasePlayer();
+
     }
 
 
     @Override
     public void onStop() {
         super.onStop();
+       if(simpleExoPlayer != null)
+          curPosition =  simpleExoPlayer.getCurrentPosition();
+           simpleExoPlayer.stop();
+    }
+
+    private void releasePlayer() {
+        if(simpleExoPlayer != null){
+        simpleExoPlayer.stop();
         simpleExoPlayer.release();
+        simpleExoPlayer = null;
+    }
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(simpleExoPlayer != null ){
+        simpleExoPlayer.seekTo(curPosition);
+        simpleExoPlayer.prepare(mediaSource);
+        simpleExoPlayer.setPlayWhenReady(true);
+    }
     }
 }

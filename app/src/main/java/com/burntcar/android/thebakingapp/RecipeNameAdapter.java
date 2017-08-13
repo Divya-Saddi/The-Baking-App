@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.burntcar.android.thebakingapp.restCalls.Recipe;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -63,7 +64,7 @@ public class RecipeNameAdapter extends RecyclerView.Adapter<RecipeNameAdapter.Re
 
         String imageUrl = recipe.image;
 
-        if(!(imageUrl.contains(".jpg") || imageUrl.contains(".png") || imageUrl.contains(".jpg"))) {
+        if(!(imageUrl.contains(".jpeg") || imageUrl.contains(".png") || imageUrl.contains(".jpg"))) {
             //as the image url is empty I'm populating the ImageViews on My own!
             switch (position) {
                 case 0:
@@ -81,6 +82,14 @@ public class RecipeNameAdapter extends RecyclerView.Adapter<RecipeNameAdapter.Re
                 default:
                     holder.imageView.setImageResource(R.drawable.cupcake);
             }
+
+        }else{
+
+            Picasso.with(holder.imageView.getContext())
+                    .load(imageUrl)
+                    .error(R.drawable.cupcake)
+                    .placeholder(R.drawable.cupcake)
+                    .into(holder.imageView);
 
         }
     }

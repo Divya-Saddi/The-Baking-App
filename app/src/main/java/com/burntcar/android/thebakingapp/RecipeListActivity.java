@@ -18,27 +18,29 @@ import com.burntcar.android.thebakingapp.restCalls.Step;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 public class RecipeListActivity extends AppCompatActivity {
 
 
     private boolean mTwoPane;
 
-    Recipe recipe;
-    ArrayList<Step> steps;
-    ArrayList<Recipe> recipeList;
-
-    CardView cardView;
+    private Recipe recipe;
+    private ArrayList<Step> steps;
+    private ArrayList<Recipe> recipeList;
+    @BindView(R.id.ingred_card_view)
+     CardView cardView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_list);
-
+        ButterKnife.bind(this);
         recipe = getIntent().getExtras().getParcelable("recipe");
         recipeList = getIntent().getExtras().getParcelableArrayList("recipeList");
         steps = recipe.steps;
-        cardView = (CardView) findViewById(R.id.ingred_card_view);
         setTitle(recipe.name);
 
 
