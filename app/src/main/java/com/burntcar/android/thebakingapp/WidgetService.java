@@ -4,13 +4,11 @@ import android.content.Intent;
 import android.widget.RemoteViewsService;
 
 
-
 /**
  * Created by Harshraj on 09-08-2017.
  */
 
 public class WidgetService extends RemoteViewsService {
-
 
 
     @Override

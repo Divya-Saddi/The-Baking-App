@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/cupcake"
@@ -11,7 +12,8 @@
         android:roundIcon="@drawable/cupcake"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:launchMode="singleTask" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,7 +24,13 @@
             android:name=".RecipeListActivity"
             android:label="@string/title_recipe_list"
             android:launchMode="singleTask"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+
+            </activity>
         <activity
             android:name=".RecipeDetailActivity"
             android:label="@string/title_recipe_detail"
@@ -43,8 +51,9 @@
                 android:resource="@xml/baking_app_widget_info" />
         </receiver>
 
-        <service android:name=".WidgetService"
-           android:permission="android.permission.BIND_REMOTEVIEWS">
+        <service
+            android:name=".WidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS">
 
         </service>
     </application>

@@ -8,54 +8,56 @@ import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.test.espresso.IdlingResource;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.burntcar.android.thebakingapp.restCalls.BakingAppClient;
 import com.burntcar.android.thebakingapp.restCalls.Recipe;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity implements RecipeNameAdapter.ListItemClickListener {
 
+public class MainActivity extends AppCompatActivity implements RecipeNameAdapter.ListItemClickListener, DataDownloader.DelayerCallback {
+
+    @Nullable
+    private BakingIdlingResource mIdlingResource;
 
     @BindView(R.id.progress_bar)
-     ProgressBar progressBar;
+    ProgressBar progressBar;
 
     @BindView(R.id.recyclerview_recipe_name)
-     RecyclerView recyclerView;
+    RecyclerView recyclerView;
 
     private RecipeNameAdapter recipeNameAdapter;
 
     private ArrayList<Recipe> recipes;
 
-    private String baseUrl;
-
+    @BindView(R.id.snackbarlocation)
+    CoordinatorLayout coordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        getIdlingResource();
+
         recipeNameAdapter = new RecipeNameAdapter(this);
 
-        baseUrl = getString(R.string.baseUrl);
 
         progressBar.setVisibility(View.VISIBLE);
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -71,40 +73,15 @@ public class MainActivity extends AppCompatActivity implements RecipeNameAdapter
         recyclerView.setAdapter(recipeNameAdapter);
 
 
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create());
-
-        Retrofit retrofit = builder.build();
-
-        BakingAppClient client = retrofit.create(BakingAppClient.class);
-        Call<List<Recipe>> call = client.recipesForApp();
-
         if (isNetworkAvailable()) {
-            call.enqueue(new Callback<List<Recipe>>() {
-                @Override
-                public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
-                    recipes = (ArrayList<Recipe>) response.body();
-                    progressBar.setVisibility(View.INVISIBLE);
-                    recipeNameAdapter.setData(recipes);
-
-                    Toast.makeText(MainActivity.this, "Recipes loaded",
-                            Toast.LENGTH_LONG).show();
-                }
-
-                @Override
-                public void onFailure(Call<List<Recipe>> call, Throwable t) {
-                    Toast.makeText(MainActivity.this, "Problem Loading data check connection",
-                            Toast.LENGTH_LONG).show();
-
-
-                }
-            });
+            DataDownloader.downloadData(this, MainActivity.this, mIdlingResource);
         }
 
         if (!isNetworkAvailable()) {
-            Toast.makeText(getBaseContext(),
-                    "No Internet connection available", Toast.LENGTH_LONG).show();
+
+            Snackbar bar = Snackbar.make(coordinatorLayout, "No Internet Connection", Snackbar.LENGTH_INDEFINITE);
+            bar.show();
+
             progressBar.setVisibility(View.INVISIBLE);
         }
     }
@@ -122,7 +99,6 @@ public class MainActivity extends AppCompatActivity implements RecipeNameAdapter
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, BakingAppWidget.class));
         BakingAppWidget.updateFromActivity(this, appWidgetManager, appWidgetIds, clickedItemIndex, recipes);
-        Log.i("mainActivity", "intentSent");
     }
 
     private boolean isNetworkAvailable() {
@@ -131,4 +107,25 @@ public class MainActivity extends AppCompatActivity implements RecipeNameAdapter
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
+
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingResource() {
+        if (mIdlingResource == null) {
+            mIdlingResource = new BakingIdlingResource();
+        }
+        return mIdlingResource;
+    }
+
+    @Override
+    public void onDone(ArrayList<Recipe> recipeList) {
+        recipes = recipeList;
+        progressBar.setVisibility(View.INVISIBLE);
+        recipeNameAdapter.setData(recipes);
+
+        Toast.makeText(MainActivity.this, "Recipes loaded",
+                Toast.LENGTH_LONG).show();
+    }
+
+
 }

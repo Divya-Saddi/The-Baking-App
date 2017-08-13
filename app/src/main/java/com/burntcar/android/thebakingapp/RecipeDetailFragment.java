@@ -1,54 +1,37 @@
 package com.burntcar.android.thebakingapp;
 
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 
 import com.burntcar.android.thebakingapp.restCalls.Ingredient;
-import com.burntcar.android.thebakingapp.restCalls.Recipe;
 import com.burntcar.android.thebakingapp.restCalls.Step;
-
 import com.google.android.exoplayer2.ExoPlayerFactory;
-
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.squareup.picasso.Picasso;
 
-
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-
-import static android.R.attr.button;
-
 
 
 public class RecipeDetailFragment extends Fragment {
 
 
     private Step step;
-    private  SimpleExoPlayer simpleExoPlayer;
+    private SimpleExoPlayer simpleExoPlayer;
     private ArrayList<Ingredient> ingredients;
     private ArrayList<Step> stepsList;
     private int position;
@@ -60,30 +43,30 @@ public class RecipeDetailFragment extends Fragment {
     public RecipeDetailFragment() {
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-            step = (Step) getArguments().getParcelable("step");
+
+        step = getArguments().getParcelable("step");
         ingredients = getArguments().getParcelableArrayList("ingredients");
         stepsList = getArguments().getParcelableArrayList("stepsList");
         position = getArguments().getInt("position");
         twoPane = getArguments().getBoolean("twoPane");
 
 
+        if (step != null) {
 
-if(step != null){
+            if (simpleExoPlayer == null) {
+                simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), new DefaultTrackSelector());
+            }
+            mediaSource = new ExtractorMediaSource(Uri.parse(step.videoURL), new DefaultDataSourceFactory(
+                    getActivity(), "donno string"), new DefaultExtractorsFactory(), null, null);
+            simpleExoPlayer.prepare(mediaSource);
+            simpleExoPlayer.setPlayWhenReady(true);
 
-    if(simpleExoPlayer == null) {
-        simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), new DefaultTrackSelector());
-    }
-    mediaSource =new ExtractorMediaSource(Uri.parse(step.videoURL), new DefaultDataSourceFactory(
-            getActivity(), "donno string"), new DefaultExtractorsFactory(), null, null);
-    simpleExoPlayer.prepare(mediaSource);
-    simpleExoPlayer.setPlayWhenReady(true);
-
-}
-
+        }
 
 
     }
@@ -93,23 +76,23 @@ if(step != null){
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.recipe_detail, container, false);
 
-        if(ingredients != null){
-            ((TextView) rootView.findViewById(R.id.recipe_detail)).setVisibility(View.GONE);
-            ((SimpleExoPlayerView) rootView.findViewById(R.id.playerView)).setVisibility(View.GONE);
-            int i =0;
-            for(Ingredient ingredient:ingredients){
-                ((TextView) rootView.findViewById(R.id.recipe_desc_tv)).append(++i+". "+ingredient.ingredient.substring(0,1).toUpperCase()+ingredient.ingredient.substring(1)+" \n\n");
+        if (ingredients != null) {
+            (rootView.findViewById(R.id.recipe_detail)).setVisibility(View.GONE);
+            (rootView.findViewById(R.id.playerView)).setVisibility(View.GONE);
+            int i = 0;
+            for (Ingredient ingredient : ingredients) {
+                ((TextView) rootView.findViewById(R.id.recipe_desc_tv)).append(++i + ". " + ingredient.ingredient.substring(0, 1).toUpperCase() + ingredient.ingredient.substring(1) + " \n\n");
 
             }
 
         }
 
-        if(step != null){
+        if (step != null) {
 
             ((TextView) rootView.findViewById(R.id.recipe_detail)).setText(step.shortDescription);
             ((TextView) rootView.findViewById(R.id.recipe_desc_tv)).setText(step.description);
 
-            if(step.thumbnailURL.contains(".jpeg") || step.thumbnailURL.contains(".jpg") || step.thumbnailURL.contains("png")) {
+            if (step.thumbnailURL.contains(".jpeg") || step.thumbnailURL.contains(".jpg") || step.thumbnailURL.contains("png")) {
 
 
                 ImageView imageView = (ImageView) rootView.findViewById(R.id.thumbnail_img);
@@ -121,25 +104,25 @@ if(step != null){
                         .placeholder(R.drawable.cupcake)
                         .into(imageView);
 
-            }else {
+            } else {
                 rootView.findViewById(R.id.no_thumbnail_tv).setVisibility(View.VISIBLE);
             }
 
-            if(step.videoURL != null && !step.videoURL.isEmpty()) {
-                videoplaying= true;
+            if (step.videoURL != null && !step.videoURL.isEmpty()) {
+                videoplaying = true;
                 ((SimpleExoPlayerView) rootView.findViewById(R.id.playerView)).setPlayer(simpleExoPlayer);
-            }else {
+            } else {
                 videoplaying = false;
-                ((SimpleExoPlayerView) rootView.findViewById(R.id.playerView)).setVisibility(View.GONE);
+                (rootView.findViewById(R.id.playerView)).setVisibility(View.GONE);
             }
             Button button = (Button) rootView.findViewById(R.id.next_step_btn);
-            if(twoPane) {
+            if (twoPane) {
                 button.setVisibility(View.GONE);
-            }else {
+            } else {
 
                 if (position + 1 == stepsList.size()) {
                     button.setVisibility(View.GONE);
-                }else{
+                } else {
                     button.setVisibility(View.VISIBLE);
                 }
 
@@ -157,12 +140,12 @@ if(step != null){
 
 
                         if (position + 1 == stepsList.size()) {
-                            ((Button) rootView.findViewById(R.id.next_step_btn)).setVisibility(View.GONE);
+                            (rootView.findViewById(R.id.next_step_btn)).setVisibility(View.GONE);
                         }
 
                         Step currStep = stepsList.get(position);
 
-                        if(currStep.thumbnailURL.contains(".jpeg") || currStep.thumbnailURL.contains(".jpg") || currStep.thumbnailURL.contains("png")) {
+                        if (currStep.thumbnailURL.contains(".jpeg") || currStep.thumbnailURL.contains(".jpg") || currStep.thumbnailURL.contains("png")) {
 
                             ImageView imageView = (ImageView) rootView.findViewById(R.id.thumbnail_img);
                             imageView.setVisibility(View.VISIBLE);
@@ -173,7 +156,7 @@ if(step != null){
                                     .placeholder(R.drawable.cupcake)
                                     .into(imageView);
 
-                        }else {
+                        } else {
                             rootView.findViewById(R.id.no_thumbnail_tv).setVisibility(View.VISIBLE);
                         }
 
@@ -191,10 +174,10 @@ if(step != null){
                             simpleExoPlayer.setPlayWhenReady(true);
                             videoplaying = true;
                             ((SimpleExoPlayerView) rootView.findViewById(R.id.playerView)).setPlayer(simpleExoPlayer);
-                            ((SimpleExoPlayerView) rootView.findViewById(R.id.playerView)).setVisibility(View.VISIBLE);
+                            (rootView.findViewById(R.id.playerView)).setVisibility(View.VISIBLE);
                         } else {
                             videoplaying = false;
-                            ((SimpleExoPlayerView) rootView.findViewById(R.id.playerView)).setVisibility(View.GONE);
+                            (rootView.findViewById(R.id.playerView)).setVisibility(View.GONE);
                         }
 
 
@@ -204,6 +187,8 @@ if(step != null){
             }
 
         }
+
+
         return rootView;
     }
 
@@ -218,27 +203,30 @@ if(step != null){
     @Override
     public void onStop() {
         super.onStop();
-       if(simpleExoPlayer != null)
-          curPosition =  simpleExoPlayer.getCurrentPosition();
-           simpleExoPlayer.stop();
+        if (simpleExoPlayer != null) {
+            curPosition = simpleExoPlayer.getCurrentPosition();
+            simpleExoPlayer.stop();
+        }
     }
 
     private void releasePlayer() {
-        if(simpleExoPlayer != null){
-        simpleExoPlayer.stop();
-        simpleExoPlayer.release();
-        simpleExoPlayer = null;
-    }
+        if (simpleExoPlayer != null) {
+            simpleExoPlayer.stop();
+            simpleExoPlayer.release();
+            simpleExoPlayer = null;
+        }
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
-        if(simpleExoPlayer != null ){
-        simpleExoPlayer.seekTo(curPosition);
-        simpleExoPlayer.prepare(mediaSource);
-        simpleExoPlayer.setPlayWhenReady(true);
+        if (simpleExoPlayer != null) {
+            simpleExoPlayer.seekTo(curPosition);
+            simpleExoPlayer.prepare(mediaSource);
+            simpleExoPlayer.setPlayWhenReady(true);
+        }
     }
-    }
+
+
 }

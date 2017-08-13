@@ -1,6 +1,5 @@
 package com.burntcar.android.thebakingapp;
 
-import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -23,17 +22,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by Harshraj on 09-08-2017.
  */
 
-public class WidgetFactory implements RemoteViewsService.RemoteViewsFactory  {
+public class WidgetFactory implements RemoteViewsService.RemoteViewsFactory {
 
     private Context mContext;
-    private int mAppWidgetId;
-    private List<Recipe> recipes ;
+    private List<Recipe> recipes;
 
     public WidgetFactory(Context applicationContext, Intent intent) {
 
         mContext = applicationContext;
-        mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-                AppWidgetManager.INVALID_APPWIDGET_ID);
+
 
     }
 
@@ -59,13 +56,11 @@ public class WidgetFactory implements RemoteViewsService.RemoteViewsFactory  {
     public int getCount() {
 
 
-        if(recipes != null)
-        {
+        if (recipes != null) {
 
             return recipes.size();
 
-        }
-        else{
+        } else {
 
             return 0;
         }
@@ -77,9 +72,9 @@ public class WidgetFactory implements RemoteViewsService.RemoteViewsFactory  {
         Recipe recipe = recipes.get(position);
         List<Ingredient> ingredients = recipe.ingredients;
         String x = "";
-        int i =0;
-        for(Ingredient ingredient: ingredients){
-            x = x + (++i)+". "+ ingredient.ingredient +" \n";
+        int i = 0;
+        for (Ingredient ingredient : ingredients) {
+            x = x + (++i) + ". " + ingredient.ingredient + " \n";
         }
 
 
@@ -110,7 +105,7 @@ public class WidgetFactory implements RemoteViewsService.RemoteViewsFactory  {
         return false;
     }
 
-    class AsyncClass extends AsyncTask<Void,Void,List<Recipe>>{
+    class AsyncClass extends AsyncTask<Void, Void, List<Recipe>> {
 
         @Override
         protected List<Recipe> doInBackground(Void... params) {
@@ -125,7 +120,7 @@ public class WidgetFactory implements RemoteViewsService.RemoteViewsFactory  {
             Call<List<Recipe>> call = client.recipesForApp();
 
             try {
-                xyz =  call.execute().body();
+                xyz = call.execute().body();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -135,7 +130,7 @@ public class WidgetFactory implements RemoteViewsService.RemoteViewsFactory  {
 
         @Override
         protected void onPostExecute(List<Recipe> recipeList) {
-          recipes =  recipeList;
+            recipes = recipeList;
 
 
         }

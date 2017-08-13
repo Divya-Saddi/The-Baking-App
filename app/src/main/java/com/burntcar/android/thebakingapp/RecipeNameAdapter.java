@@ -17,17 +17,17 @@ import java.util.List;
  * Created by Harshraj on 30-07-2017.
  */
 
-public class RecipeNameAdapter extends RecyclerView.Adapter<RecipeNameAdapter.RecipeNameAdapterViewHolder>{
+public class RecipeNameAdapter extends RecyclerView.Adapter<RecipeNameAdapter.RecipeNameAdapterViewHolder> {
 
     private List<Recipe> recipeArrayList;
     final private ListItemClickListener mListItemClickListener;
 
-    public void setData(List<Recipe> recipeList){
+    public void setData(List<Recipe> recipeList) {
         recipeArrayList = recipeList;
         notifyDataSetChanged();
     }
 
-    public interface ListItemClickListener{
+    public interface ListItemClickListener {
         void onListItemClicked(int clickedItemIndex);
     }
 
@@ -42,10 +42,7 @@ public class RecipeNameAdapter extends RecyclerView.Adapter<RecipeNameAdapter.Re
         LayoutInflater inflater = LayoutInflater.from(context);
 
 
-
-
         View recipeTextView = inflater.inflate(R.layout.recipe_name_list_item, parent, false);
-
 
 
         RecipeNameAdapterViewHolder moviesAdapterViewHolder = new RecipeNameAdapterViewHolder(recipeTextView);
@@ -64,7 +61,7 @@ public class RecipeNameAdapter extends RecyclerView.Adapter<RecipeNameAdapter.Re
 
         String imageUrl = recipe.image;
 
-        if(!(imageUrl.contains(".jpeg") || imageUrl.contains(".png") || imageUrl.contains(".jpg"))) {
+        if (!(imageUrl.contains(".jpeg") || imageUrl.contains(".png") || imageUrl.contains(".jpg"))) {
             //as the image url is empty I'm populating the ImageViews on My own!
             switch (position) {
                 case 0:
@@ -83,7 +80,7 @@ public class RecipeNameAdapter extends RecyclerView.Adapter<RecipeNameAdapter.Re
                     holder.imageView.setImageResource(R.drawable.cupcake);
             }
 
-        }else{
+        } else {
 
             Picasso.with(holder.imageView.getContext())
                     .load(imageUrl)
@@ -100,7 +97,7 @@ public class RecipeNameAdapter extends RecyclerView.Adapter<RecipeNameAdapter.Re
         return recipeArrayList.size();
     }
 
-    public class RecipeNameAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class RecipeNameAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView RecipeNametextView;
         ImageView imageView;

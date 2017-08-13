@@ -19,7 +19,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
     private Step step;
     private ArrayList<Ingredient> ingredients;
     private ArrayList<Step> stepsList;
-    private  int position;
+    private int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +54,8 @@ public class RecipeDetailActivity extends AppCompatActivity {
             Bundle bundle = new Bundle();
             bundle.putParcelable("step", step);
             bundle.putParcelableArrayList("ingredients", ingredients);
-            bundle.putParcelableArrayList("stepsList",stepsList);
-            bundle.putInt("position",position);
+            bundle.putParcelableArrayList("stepsList", stepsList);
+            bundle.putInt("position", position);
 
             fragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction()

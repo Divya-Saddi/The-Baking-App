@@ -5,7 +5,6 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.burntcar.android.thebakingapp.restCalls.Ingredient;
@@ -15,11 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
-
 public class BakingAppWidget extends AppWidgetProvider {
-
-
 
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
@@ -42,27 +37,24 @@ public class BakingAppWidget extends AppWidgetProvider {
         }
     }
 
-    static void updateFromActivity(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds,int itemClicked, ArrayList<Recipe> recipes){
+    static void updateFromActivity(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds, int itemClicked, ArrayList<Recipe> recipes) {
 
-
-
-        Log.i("qwerty",itemClicked+"");
 
         for (int appWidgetId : appWidgetIds) {
 
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.updated_widget_layout);
 
             List<Ingredient> ingredients = recipes.get(itemClicked).ingredients;
-            int i=0;
+            int i = 0;
             String x = "";
-            for(Ingredient ingredient: ingredients){
-                x = x + (++i)+". "+ ingredient.ingredient.substring(0,1).toUpperCase()+ingredient.ingredient.substring(1) +" \n";
+            for (Ingredient ingredient : ingredients) {
+                x = x + (++i) + ". " + ingredient.ingredient.substring(0, 1).toUpperCase() + ingredient.ingredient.substring(1) + " \n";
             }
 
-            views.setTextViewText(R.id.widget_title,recipes.get(itemClicked).name+" Ingredients");
-            views.setTextViewText(R.id.widget_content,x);
+            views.setTextViewText(R.id.widget_title, recipes.get(itemClicked).name + " Ingredients");
+            views.setTextViewText(R.id.widget_content, x);
 
-            appWidgetManager.updateAppWidget(appWidgetId,views);
+            appWidgetManager.updateAppWidget(appWidgetId, views);
         }
     }
 

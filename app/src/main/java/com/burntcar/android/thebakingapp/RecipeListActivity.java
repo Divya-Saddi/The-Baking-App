@@ -29,9 +29,8 @@ public class RecipeListActivity extends AppCompatActivity {
 
     private Recipe recipe;
     private ArrayList<Step> steps;
-    private ArrayList<Recipe> recipeList;
     @BindView(R.id.ingred_card_view)
-     CardView cardView;
+    CardView cardView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +38,11 @@ public class RecipeListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_recipe_list);
         ButterKnife.bind(this);
         recipe = getIntent().getExtras().getParcelable("recipe");
-        recipeList = getIntent().getExtras().getParcelableArrayList("recipeList");
         steps = recipe.steps;
         setTitle(recipe.name);
+        Toolbar t = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(t);
+        this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
         cardView.setOnClickListener(new View.OnClickListener() {
@@ -52,14 +53,14 @@ public class RecipeListActivity extends AppCompatActivity {
                 if (mTwoPane) {
                     RecipeDetailFragment fragment = new RecipeDetailFragment();
                     Bundle bundle = new Bundle();
-                    bundle.putParcelableArrayList("ingredients",recipe.ingredients);
+                    bundle.putParcelableArrayList("ingredients", recipe.ingredients);
 
                     fragment.setArguments(bundle);
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.recipe_detail_container, fragment)
                             .commit();
 
-                }else {
+                } else {
 
                     Intent intent = new Intent(RecipeListActivity.this, RecipeDetailActivity.class);
                     intent.putParcelableArrayListExtra("ingredients", recipe.ingredients);
@@ -67,7 +68,6 @@ public class RecipeListActivity extends AppCompatActivity {
                 }
             }
         });
-
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -110,7 +110,7 @@ public class RecipeListActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final ViewHolder holder, final int position) {
 
-            holder.stepTV.setText("Step "+(position+1)+" : " +mRecipeSteps.get(position).shortDescription);
+            holder.stepTV.setText("Step " + (position + 1) + " : " + mRecipeSteps.get(position).shortDescription);
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -118,8 +118,8 @@ public class RecipeListActivity extends AppCompatActivity {
 
                         RecipeDetailFragment fragment = new RecipeDetailFragment();
                         Bundle bundle = new Bundle();
-                        bundle.putParcelable("step",steps.get(position));
-                        bundle.putBoolean("twoPane",true);
+                        bundle.putParcelable("step", steps.get(position));
+                        bundle.putBoolean("twoPane", true);
                         fragment.setArguments(bundle);
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.recipe_detail_container, fragment)
@@ -128,8 +128,8 @@ public class RecipeListActivity extends AppCompatActivity {
 
                         Intent intent = new Intent(RecipeListActivity.this, RecipeDetailActivity.class);
                         intent.putExtra("step", mRecipeSteps.get(position));
-                        intent.putExtra("position",position);
-                        intent.putParcelableArrayListExtra("stepsList",steps);
+                        intent.putExtra("position", position);
+                        intent.putParcelableArrayListExtra("stepsList", steps);
                         startActivity(intent);
 
                     }
@@ -157,4 +157,6 @@ public class RecipeListActivity extends AppCompatActivity {
 
         }
     }
+
+
 }
