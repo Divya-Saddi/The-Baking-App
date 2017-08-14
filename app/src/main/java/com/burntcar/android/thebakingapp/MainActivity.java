@@ -75,15 +75,13 @@ public class MainActivity extends AppCompatActivity implements RecipeNameAdapter
 
         if (isNetworkAvailable()) {
             DataDownloader.downloadData(this, MainActivity.this, mIdlingResource);
-        }
-
-        if (!isNetworkAvailable()) {
-
+        }else{
             Snackbar bar = Snackbar.make(coordinatorLayout, "No Internet Connection", Snackbar.LENGTH_INDEFINITE);
             bar.show();
 
             progressBar.setVisibility(View.INVISIBLE);
         }
+
     }
 
     @Override
@@ -107,6 +105,8 @@ public class MainActivity extends AppCompatActivity implements RecipeNameAdapter
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
+
+
 
     @VisibleForTesting
     @NonNull
